@@ -2,7 +2,10 @@ import React, { useState, useEffect, useContext } from "react";
 import { site_data, discounted_sales, liked } from "./site_data.js";
 import { Link } from "react-router-dom";
 import { Cart_content } from "./App.js";
-import { use_cart_content, use_cart_content_update } from "./CartContext.js";
+// import { use_cart_content, use_cart_content_update } from "./CartContext.js";
+import { Cart_context } from "./App.js";
+
+import PropTypes from 'prop-types'
 
 const General = function () {
   const [sellingproducts, setSellingproducts] = useState(site_data);
@@ -10,8 +13,9 @@ const General = function () {
     useState(discounted_sales);
   const [myliked, setMyliked] = useState(liked);
 
-  const mycart = use_cart_content;
-  const setMycart = use_cart_content_update;
+
+const {mycart, setMycart} = useContext(Cart_context);
+
 
   function favourite(id) {
     setSellingproducts((sellingproducts) => {
@@ -26,28 +30,8 @@ const General = function () {
         return product;
       });
     });
-
-    // let product2 = sellingproducts.find((product2)=> product2.liked === require("./images/favourite2.png"));
-    // setMyliked(() => {
-    //   return [...myliked, product2]
-    // })
-
-    console.log(myliked);
   }
 
-  // function add_to_cart(id) {
-  //   let product = sellingproducts.find((product) => product.id === id);
-  //   if (product.quantity > 0) {
-  //     setMycart(() => {
-  //       return [...mycart, product];
-  //     });
-  //     setSellingproducts(() => {
-  //       return sellingproducts.map((product) => {
-  //         return { ...product, quantity: 0 };
-  //       });
-  //     });
-  //   }
-  // }
 
   function favourite_discount(id) {
     setDiscounted_product((discounted_product) => {
@@ -106,11 +90,9 @@ const General = function () {
   function reset_discount(id) {
     setDiscounted_product((discounted_product) => {
       return discounted_product.map((product) => {
-        console.log(product);
         if (product.id == id) {
           return { ...product, quantity: 0 };
         }
-        console.log(product);
         return product;
       });
     });
@@ -150,73 +132,6 @@ const General = function () {
     }, 1);
   }
 
-  // function add_to_cart(id) {
-  //   let product = sellingproducts.find((product) => product.id === id);
-  //   if (product.quantity > 0) {
-  //     setMycart(() => {
-  //       setMycart.map((product) => {
-  //         if (product.id === id) {
-  //           return;
-  //         }
-  //       });
-
-  //       return [...mycart, product];
-  //     });
-  //     setSellingproducts(() => {
-  //       return sellingproducts.map((product) => {
-  //         return { ...product, quantity: 0 };
-  //       });
-  //     });
-
-  //     setMycart(() => {
-  //       return mycart.map((product) => {
-  //         return [...mycart, { ...product, new_quantity: product.quantity }];
-  //       });
-  //     });
-
-  //     setMycart(() => {
-  //       mycart.map((product) => {
-  //         if (product.id == id) {
-  //           return;
-  //         }
-  //       });
-  //     });
-  //   }
-  // }
-
-  // I WANT IT TO SEARCH AND CREATE A NEW VARIABLE, THEN ADD IT WITH THE NORMAL QUANTITY VARIABLE
-  // FOR THE SECOND CATEGORY, JUST GO NORMALLY
-  // OR SHOULD I CREATE A NEW VARIBALE AUTOMATICALLY? THEN ADD IT WITH THE NORMAL FOR ALL SINCE IT WILL BE INITIALLY ZERO
-  // function add_to_cart(id) {
-  //   let product = sellingproducts.find((product) => product.id === id);
-  //   if (product.quantity > 0) {
-  //     setMycart(() => {
-  //       setMycart(()=>{
-  //         return mycart.map((product)=>{
-  //           if (product.id == id){
-  //             return {...product,new_quantity: product.quantity }
-  //           }
-
-  //           return {...product,quantity:product.quantity + product.new_quantity}
-  //         })
-  //       })
-  //       return [...mycart, product];
-  //       return mycart.map((product) => {
-  //         if (product.id == id) {
-  //           return [...mycart, { ...product, new_quantity: product.quantity }];
-  //         } else {
-  //           return [...mycart, product];
-  //         }
-  //       });
-  //     });
-
-  //     setSellingproducts(() => {
-  //       return sellingproducts.map((product) => {
-  //         return { ...product, quantity: 0 };
-  //       });
-  //     });
-  //   }
-  // }
 
   function add_to_cart(id) {
     let product = sellingproducts.find((product) => product.id === id);
@@ -252,6 +167,7 @@ const General = function () {
     }
   }
 
+  // project the product only
   function see_more(id) {
     function myfunction(product) {
       // or return (product.id == id)
@@ -261,7 +177,6 @@ const General = function () {
     }
     console.log(sellingproducts.filter(myfunction));
 
-    // setsomething(sellingproducts.filter(myfunction))
     sellingproducts.filter(myfunction);
   }
 
@@ -278,8 +193,10 @@ const General = function () {
             }}
             className="favourite_button"
           >
+            
             <img src={liked} alt="favourites" />
           </button>
+          {/* import a default image for products that dont have images */}
           <img src={img} alt={category} className="selling_item_image" />
           <Link
             to={"Product"}
@@ -294,9 +211,9 @@ const General = function () {
               see more...
             </p>
           </Link>
-          <h2>{brand}</h2>
+          <h2>{brand || 'others'}</h2>
           <h4>Price(each):&#36;{price}</h4>
-          <h4>Quantity:{quantity}</h4>
+          <h4>Quantity:{quantity || 0}</h4>
           <div className="button_functions">
             <button
               type="button"
@@ -336,6 +253,24 @@ const General = function () {
       );
     });
   };
+
+
+  // remeber to do this for discounted products
+  General_display.propTypes = {
+    category: PropTypes.string.isRequired,
+    brand: PropTypes.string.isRequired,
+    // both can be set to miscelleneous
+    img: PropTypes.string.isRequired,
+    // alternative to be a blank product image
+    price: PropTypes.number.isRequired,
+     quantity: PropTypes.number.isRequired,
+    //  alternative has been set to zero....as it shoudl be. wink!
+      id: PropTypes.string.isRequired,
+      // shoudl i leave this id or i should change it to index?
+       liked : PropTypes.string.isRequired,
+      //  i have to remove this liked, it should be defaultly set to the blank image
+  }
+
 
   const Discounted_products = () => {
     return discounted_product.map((item) => {
@@ -419,6 +354,16 @@ const General = function () {
       );
     });
   };
+  //   Discounted_products.propTypes = {
+  //   category: PropTypes.string.isRequired,
+  //   brand: PropTypes.string.isRequired,
+  //   img: PropTypes.string.isRequired,
+  //   price: PropTypes.number.isRequired,
+  //   discount: PropTypes.number.isRequired,
+  //    quantity: PropTypes.number.isRequired,
+  //     id: PropTypes.string.isRequired,
+  //      liked : PropTypes.string.isRequired,
+  // }
 
   const Cart_basket = () => {
     return mycart.map((item) => {
@@ -514,6 +459,7 @@ const General = function () {
         </div>
         <h1>Discounted products</h1>
         <div className=" discounted_products">
+          {/* you can add an if statement that checks whether there are discounted products before displaying the heading */}
           <Discounted_products />
         </div>
         <h1>Normal sales</h1>
@@ -522,7 +468,7 @@ const General = function () {
         </div>
         <h1>Cart</h1>
         <div className="showglass">
-          <Cart_basket />
+          {/* <Cart_basket /> */}
         </div>
 
         <h1>FAVOURITES</h1>

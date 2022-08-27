@@ -1,26 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-
-export const Search_product = function() {
+export const Search_product = function () {
   let search_input = document.querySelector(".search_input");
   let search_input2 = document.querySelector(".search_input2");
-  const [ mysearch, setMysearch] = useState (search_input.value)
+  const [mysearch, setMysearch] = useState(search_input.value);
 
   if (search_input.value.length > 0 || search_input2.value.length > 0) {
     window.location.href = "/search";
     return search_input.value;
   }
-}
-
+};
 
 // probably trqansfer the help to the sidebar and check why the topnav bar isnt wrapping
 const Header = () => {
   const [navstatus, setNavstatus] = useState(false);
+  const [size, setSize] = React.useState(window.innerWidth);
+
+
+  // permanetly leaves the sidebar open for big screens
+  // or should i just do it in css?
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setSize(window.innerWidth);
+    });
+    return () => {
+      window.removeEventListener("resize", setSize);
+    };
+  });
+
+  useEffect(() => {
+    if (size >= 768) {
+      setNavstatus(true);
+    }
+  });
+
+  useEffect(() => {
+    if (size < 768) {
+      setNavstatus(false);
+    }
+  }, []);
 
   return (
     <header>
-      <div >
+      <div>
         <nav className="navbar">
           <div className="topbar">
             <button

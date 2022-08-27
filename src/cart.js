@@ -1,46 +1,69 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import general from "./General.js";
+import { Cart_context } from "./App.js";
 
 const Cart = function () {
+  const { mycart, setMycart } = useContext(Cart_context);
+  const [totalprice, setTotalprice] = useState(0);
 
-  const Cart_basket = () => {
-    console.log(general.mycart)
-    return <div>{general.mycart}</div>
-    
-    // return mycart.map((item) => {
-    //   const { category, brand, img, price, quantity, id, liked, discount } =
-    //     item;
+  function remove_item(index) {
+    // fix the total sum
+    setMycart(() => {
+      return mycart.filter((product) => mycart.indexOf(product) !== index);
+    });
+  }
 
-    //   return (
-    //     <div className="selling_item" key={id}>
-    //       {/* <button
-    //         type="button"
-    //         onClick={() => {
-    //           favourite(id);
-    //         }}
-    //         className="favourite_button"
-    //       >
-    //         <img src={liked} alt="favourites" />
-    //       </button> */}
-    //       <img src={img} alt={category} className="selling_item_image" />
-    //       <h2>{brand}</h2>
-    //       <h4>Price(each): &#36;{price}</h4>
-    //       <h4>Quantity:{quantity}</h4>
-    //       <hr></hr>
-    //       <h4>Total:&#36;{quantity * price}</h4>
-    //     </div>
-    //   );
-    // });
+  useEffect(() => {
+    setTotalprice(() => {
+      return (
+        mycart.map((product) => {
+          return  product.price * product.quantity + ' '
+        })
+      );
+    });
+  },[]);
+
+  const Cart_items = () => {
+    return mycart.map((product) => {
+      const { category, brand, img, price, quantity, id, liked } = product;
+      const index = mycart.indexOf(product);
+      return (
+        <div className="cart_item">
+          <h4>{brand}</h4>
+          <image src={img} alt={category} />
+          <h4>
+            &#36;{price}({quantity})
+          </h4>
+          <h4>subtotal: &#36;{price * quantity}</h4>
+          <button
+            onClick={() => {
+              remove_item(index);
+            }}
+          >
+            delete
+          </button>
+        </div>
+      );
+    });
   };
 
-  console.log(general.mycart)
+  const Cart_basket = () => {
+    return (
+      <React.Fragment>
+        <h1>here is my cart</h1>
+        <div className="cart_basket">
+          <Cart_items />
+        </div>
+        <h4>TOTAL:&#36;{totalprice}</h4>
+        <button>cashout</button>
+      </React.Fragment>
+    );
+  };
+
   return (
     <div>
-      <Link to={`/`}>
-        <h1>here is my cart</h1>
-        <Cart_basket />
-      </Link>
+      {mycart.length < 1 ? <h1>ADD ITEMS TO CART</h1> : <Cart_basket />}
     </div>
   );
 };
