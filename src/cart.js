@@ -41,7 +41,7 @@ const Cart = function () {
               remove_item(index);
             }}
           >
-            delete
+            <img src={require("./images/delete.png")} alt="delete"/>
           </button>
         </div>
       );
