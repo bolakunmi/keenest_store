@@ -16,13 +16,13 @@ const Cart = function () {
 
   useEffect(() => {
     setTotalprice(() => {
-      return (
-        mycart.map((product) => {
-          return  product.price * product.quantity + ' '
+      return mycart
+        .map((product) => {
+          return product.price * product.quantity;
         })
-      );
+        .reduce((prev, current) => prev + current, 0);
     });
-  },[]);
+  });
 
   const Cart_items = () => {
     return mycart.map((product) => {
@@ -35,7 +35,7 @@ const Cart = function () {
           <h4>
             &#36;{price}({quantity})
           </h4>
-          <h4>subtotal: &#36;{price * quantity}</h4>
+          <h4> &#36;{price * quantity}</h4>
           <button
             onClick={() => {
               remove_item(index);
@@ -55,7 +55,9 @@ const Cart = function () {
         <div className="cart_basket">
           <Cart_items />
         </div>
-        <h4>TOTAL:&#36;{totalprice}</h4>
+        <h4>subtotal:&#36;{totalprice}</h4>
+        <h4>shipping:&#36;{Math.round(totalprice / 1000) * 100}</h4>
+        <h4>TOTAL:&#36;{totalprice + (Math.round(totalprice / 1000) * 100)}</h4>
         <button>cashout</button>
       </React.Fragment>
     );
