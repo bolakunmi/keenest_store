@@ -13,24 +13,31 @@ import { site_data, cart, discounted_sales, liked } from "./site_data";
 // import { Cart_Provider } from "./CartContext.js";
 
 export const Cart_context = React.createContext();
+export const Search_context = React.createContext();
 
 // put a loader!!!
+// you can further add a useContext for favourites also
 function App() {
-const [mycart, setMycart] = useState(cart)
+  const [mycart, setMycart] = useState(cart);
+  const [mysearch, setMysearch] = useState("");
   return (
     <React.Fragment>
       <Cart_context.Provider value={{ mycart, setMycart }}>
-        <Header />
-        <Routes>
-          <Route path="/" exact element={<General />} />
-          {/* <Route path="about" exact element={<About />} /> */}
-          <Route path="cart" element={<Cart />} />
-          <Route path="product" element={<Product />} />
-          {/* the name has to be the same with the product.name */}
-          <Route path="Search" element={<Search />} />
-          {/* the name has to be with the serach input */}
-          <Route path="*" element={<Error />} />
-        </Routes>
+        <Search_context.Provider value={{ mysearch, setMycart }}>
+          <Header />
+          <Routes>
+            <Route path="/" exact element={<General />} />
+            {/* <Route path="about" exact element={<About />} /> */}
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/product/:id" element={<Product />} />
+            {/* the name has to be the same with the product.name */}
+
+            <Route path="/search" element={<Search />} />
+            {/* the name has to be with the serach input */}
+
+            <Route path="*" element={<Error />} />
+          </Routes>
+        </Search_context.Provider>
       </Cart_context.Provider>
 
       {/* <General />

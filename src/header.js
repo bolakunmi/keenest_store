@@ -1,22 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import { Link } from "react-router-dom";
-
-export const Search_product = function () {
-  let search_input = document.querySelector(".search_input");
-  let search_input2 = document.querySelector(".search_input2");
-  const [mysearch, setMysearch] = useState(search_input.value);
-
-  if (search_input.value.length > 0 || search_input2.value.length > 0) {
-    window.location.href = "/search";
-    return search_input.value;
-  }
-};
+import { Search_context } from "./App.js";
 
 // probably trqansfer the help to the sidebar and check why the topnav bar isnt wrapping
 const Header = () => {
   const [navstatus, setNavstatus] = useState(false);
   const [size, setSize] = React.useState(window.innerWidth);
+  const refContainer = useRef(null);
 
+  const { mysearch, setMysearch } = useContext(Search_context);
 
   // permanetly leaves the sidebar open for big screens
   // or should i just do it in css?
@@ -40,6 +32,16 @@ const Header = () => {
       setNavstatus(false);
     }
   }, []);
+
+  function search_input() {
+    if (refContainer.current.value.length > 0) {
+      window.location.href = "/search";
+      console.log("not empty");
+    }
+    return setMysearch(() => {
+      return refContainer.current.value;
+    });
+  }
 
   return (
     <header>
@@ -81,15 +83,14 @@ const Header = () => {
               type="text"
               placeholder="search products, brands, categories..."
               className="search_input"
+              ref={refContainer}
             />
             {/* work on this search button */}
 
             <button
               type="button"
               style={{ cursor: "pointer", width: "max-content" }}
-              onClick={() => {
-                Search_product();
-              }}
+              onClick={() => search_input()}
             >
               search
             </button>
@@ -206,22 +207,6 @@ const Header = () => {
             </Link>
           </ul>
         </nav>
-        {/* <div className="topbar_right_search_mini">
-          <img alt="search" src={require("./images/search.png")} />
-          <input
-            type="text"
-            placeholder="search products, brands, categories..."
-            className="search_input2"
-          />
-
-          <button
-            type="button"
-            style={{ cursor: "pointer" }}
-            onClick={() => {search_product()}}
-          >
-            search
-          </button>
-        </div> */}
       </div>
       {/* probably try hovering it instead of seleceting */}
       {/* <nav className="sidebar">

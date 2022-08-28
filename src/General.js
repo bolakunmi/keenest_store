@@ -17,6 +17,7 @@ const General = function () {
 const {mycart, setMycart} = useContext(Cart_context);
 
 
+
   function favourite(id) {
     setSellingproducts((sellingproducts) => {
       return sellingproducts.map((product) => {
@@ -199,7 +200,7 @@ const {mycart, setMycart} = useContext(Cart_context);
           {/* import a default image for products that dont have images */}
           <img src={img} alt={category} className="selling_item_image" />
           <Link
-            to={"Product"}
+            to={`/product/${item.id}`}
             style={{ textDecoration: "none", color: "black" }}
           >
             <p
@@ -292,7 +293,7 @@ const {mycart, setMycart} = useContext(Cart_context);
 
           <img src={img} alt={category} className="selling_item_image" />
           <Link
-            to={"Product"}
+            to={`/product/${item.id}`}
             style={{ textDecoration: "none", color: "black" }}
           >
             <p style={{ float: "right" }}>see more...</p>
@@ -365,32 +366,7 @@ const {mycart, setMycart} = useContext(Cart_context);
   //      liked : PropTypes.string.isRequired,
   // }
 
-  const Cart_basket = () => {
-    return mycart.map((item) => {
-      const { category, brand, img, price, quantity, id, liked, discount } =
-        item;
 
-      return (
-        <div className="selling_item" key={id}>
-          <button
-            type="button"
-            onClick={() => {
-              favourite(id);
-            }}
-            className="favourite_button"
-          >
-            <img src={liked} alt="favourites" />
-          </button>
-          <img src={img} alt={category} className="selling_item_image" />
-          <h2>{brand}</h2>
-          <h4>Price(each): &#36;{price}</h4>
-          <h4>Quantity:{quantity}</h4>
-          <hr></hr>
-          <h4>Total:&#36;{quantity * price}</h4>
-        </div>
-      );
-    });
-  };
 
   const Favourite = () => {
     return myliked.map((item) => {
@@ -466,10 +442,7 @@ const {mycart, setMycart} = useContext(Cart_context);
         <div className="showglass">
           <General_display />
         </div>
-        <h1>Cart</h1>
-        <div className="showglass">
-          {/* <Cart_basket /> */}
-        </div>
+
 
         <h1>FAVOURITES</h1>
         <div className="showglass">
