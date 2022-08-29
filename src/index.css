@@ -578,3 +578,14 @@ header ul {
     opacity: 90%;
   }
 }
+
+
+/* preloader */
+#preloader{
+  height: 100vh;
+  width: 100%;
+  background: black url("./images/loader.gif") no-repeat center center;
+  background-size: 30%;
+  position: fixed;
+  z-index: 100;
+}

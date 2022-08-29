@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Header from "./header.js";
 import General from "./General.js";
 import "./index.css";
-import { Routes, Route} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Cart from "./cart.js";
 import Product from "./Product.js";
 import Search from "./search.js";
@@ -17,9 +17,26 @@ export const SEARCH_CONTEXT = React.createContext();
 // you can further add a useContext for favourites also
 function App() {
   const [mycart, setMycart] = useState(cart);
-  const [mysearch, setMysearch] = useState('nosearch yet');
+  const [mysearch, setMysearch] = useState("nosearch yet");
+
+
+const loader = document.getElementById("preloader")
+    // window.addEventListener("load", function () {
+    //   loader.style = "display:none";
+    //       console.log('end',loader.style.display)
+
+    // });
+
+if(loader){
+  setTimeout(()=>{
+    loader.style = "display:none"
+  },4000)
+}
+    
+
   return (
     <React.Fragment>
+
       <CART_CONTEXT.Provider value={{ mycart, setMycart }}>
         <SEARCH_CONTEXT.Provider value={{ mysearch, setMysearch }}>
           <Header />
