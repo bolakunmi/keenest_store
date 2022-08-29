@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
-import general from "./General.js";
-import { Cart_context } from "./App.js";
+import {CART_CONTEXT} from "./App.js";
 
 const Cart = function () {
-  const { mycart, setMycart } = useContext(Cart_context);
+  const { mycart, setMycart } = useContext(CART_CONTEXT);
   const [totalprice, setTotalprice] = useState(0);
+  const [showimage, setShowimage] = useState(false);
 
   function remove_item(index) {
     // fix the total sum
@@ -22,50 +21,113 @@ const Cart = function () {
         })
         .reduce((prev, current) => prev + current, 0);
     });
-  });
+  },[mycart]);
 
-  const Cart_items = () => {
+  const CART_ITEMS = () => {
     return mycart.map((product) => {
-      const { category, brand, img, price, quantity, id, liked } = product;
+      const { category, brand, img, price, quantity} = product;
       const index = mycart.indexOf(product);
       return (
         <div className="cart_item">
-          <h4>{brand}</h4>
-          <image src={img} alt={category} />
-          <h4>
-            &#36;{price}({quantity})
-          </h4>
-          <h4> &#36;{price * quantity}</h4>
-          <button
-            onClick={() => {
-              remove_item(index);
-            }}
-          >
-            <img src={require("./images/delete.png")} alt="delete"/>
-          </button>
+          <div>
+            <h2 style={{fontSize: '18px', fontWeight: '900', fontFamily:'cursive'}}>{brand}</h2>
+            <img
+              src={img}
+              alt={category}
+              style={{ width: "100px", height: "auto" }}
+            />
+          </div>
+
+          <div>
+            <h4>
+              &#36;{price}({quantity})
+            </h4>
+            <h4> &#36;{price * quantity}</h4>
+          </div>
+
+          <div>
+            <img
+              src={require("./images/delete.png")}
+              alt="delete"
+              onClick={() => {
+                remove_item(index);
+              }}
+            />
+          </div>
         </div>
       );
     });
   };
 
-  const Cart_basket = () => {
+  const EMPTY_CART = () => {
+    return (
+      <div className="empty_cart">
+        <h1>you haven't added anything</h1>
+      </div>
+    );
+  };
+
+  const CART_BASKET = () => {
     return (
       <React.Fragment>
-        <h1>here is my cart</h1>
         <div className="cart_basket">
-          <Cart_items />
+          <CART_ITEMS />
         </div>
-        <h4>subtotal:&#36;{totalprice}</h4>
-        <h4>shipping:&#36;{Math.round(totalprice / 1000) * 100}</h4>
-        <h4>TOTAL:&#36;{totalprice + (Math.round(totalprice / 1000) * 100)}</h4>
-        <button>cashout</button>
+        <div>
+          <div style={{ marginLeft: "50vw", marginRight: "20px" }}>
+            <h4>subtotal:&#36;{totalprice}</h4>
+            <h4>shipping:&#36;{Math.round(totalprice / 1000) * 100}</h4>
+            <hr></hr>
+            <h2>
+              TOTAL:&#36;{totalprice + Math.round(totalprice / 1000) * 100}
+            </h2>
+          </div>
+
+          <button className="cashout_button"
+            onClick={() => {
+              setShowimage(!showimage);
+            }}
+          >
+            cashout
+          </button>
+          <br></br>
+        </div>
       </React.Fragment>
     );
   };
 
   return (
     <div>
-      {mycart.length < 1 ? <h1>ADD ITEMS TO CART</h1> : <Cart_basket />}
+      <h1
+        style={{
+          background: "#00a4bd",
+          color: "white",
+          marginTop: "10px",
+          padding: "20px",
+        }}
+      >
+        Cart
+      </h1>
+      {mycart.length < 1 ? <EMPTY_CART /> : <CART_BASKET />}
+      <br></br>
+      <div style={{ display: showimage ? "flex" : "none" }}>
+        <div
+          style={{
+            alignItems: "center",
+            margin: "0 auto",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <img
+            src={require("./images/cashout.jpg")}
+            alt="product"
+            style={{ width: "60%", height: "auto", borderRadius: "20px" }}
+          />
+
+          <h1 style={{ padding: "10px" }}>so you get this much money?</h1>
+        </div>
+      </div>
     </div>
   );
 };

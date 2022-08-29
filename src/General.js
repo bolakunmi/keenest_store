@@ -1,30 +1,28 @@
-import React, { useState, useEffect, useContext } from "react";
-import { site_data, discounted_sales, liked } from "./site_data.js";
+import React, { useState,  useContext } from "react";
+import { site_data, discounted_sales} from "./site_data.js";
 import { Link } from "react-router-dom";
-import { Cart_content } from "./App.js";
 // import { use_cart_content, use_cart_content_update } from "./CartContext.js";
-import { Cart_context } from "./App.js";
+import { CART_CONTEXT } from "./App.js";
 
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 
 const General = function () {
   const [sellingproducts, setSellingproducts] = useState(site_data);
   const [discounted_product, setDiscounted_product] =
     useState(discounted_sales);
-  const [myliked, setMyliked] = useState(liked);
+  // const [myliked,setMyliked] = useState(liked);
 
+  const { mycart, setMycart } = useContext(CART_CONTEXT);
 
-const {mycart, setMycart} = useContext(Cart_context);
-
-
+  // i can make a single list in the side_data then separate the discounted and non discounted here.
 
   function favourite(id) {
     setSellingproducts((sellingproducts) => {
       return sellingproducts.map((product) => {
         if (product.id === id) {
-          if (product.liked == require("./images/favourite1.png")) {
+          if (product.liked === require("./images/favourite1.png")) {
             return { ...product, liked: require("./images/favourite2.png") };
-          } else if (product.liked == require("./images/favourite2.png")) {
+          } else if (product.liked === require("./images/favourite2.png")) {
             return { ...product, liked: require("./images/favourite1.png") };
           }
         }
@@ -33,14 +31,13 @@ const {mycart, setMycart} = useContext(Cart_context);
     });
   }
 
-
   function favourite_discount(id) {
     setDiscounted_product((discounted_product) => {
       return discounted_product.map((product) => {
         if (product.id === id) {
-          if (product.liked == require("./images/favourite1.png")) {
+          if (product.liked === require("./images/favourite1.png")) {
             return { ...product, liked: require("./images/favourite2.png") };
-          } else if (product.liked == require("./images/favourite2.png")) {
+          } else if (product.liked === require("./images/favourite2.png")) {
             return { ...product, liked: require("./images/favourite1.png") };
           }
         }
@@ -53,7 +50,7 @@ const {mycart, setMycart} = useContext(Cart_context);
     setTimeout(() => {
       setSellingproducts((sellingproducts) => {
         return sellingproducts.map((product) => {
-          if (product.id == id) {
+          if (product.id === id) {
             return { ...product, quantity: product.quantity + 1 };
           }
           return product;
@@ -66,7 +63,7 @@ const {mycart, setMycart} = useContext(Cart_context);
     setTimeout(() => {
       setDiscounted_product((discounted_product) => {
         return discounted_product.map((product) => {
-          if (product.id == id) {
+          if (product.id === id) {
             return { ...product, quantity: product.quantity + 1 };
           }
           return product;
@@ -79,7 +76,7 @@ const {mycart, setMycart} = useContext(Cart_context);
     setSellingproducts((sellingproducts) => {
       return sellingproducts.map((product) => {
         console.log(product);
-        if (product.id == id) {
+        if (product.id === id) {
           return { ...product, quantity: 0 };
         }
         console.log(product);
@@ -91,7 +88,7 @@ const {mycart, setMycart} = useContext(Cart_context);
   function reset_discount(id) {
     setDiscounted_product((discounted_product) => {
       return discounted_product.map((product) => {
-        if (product.id == id) {
+        if (product.id === id) {
           return { ...product, quantity: 0 };
         }
         return product;
@@ -103,7 +100,7 @@ const {mycart, setMycart} = useContext(Cart_context);
     setTimeout(() => {
       setSellingproducts(() => {
         return sellingproducts.map((product) => {
-          if (product.id == id) {
+          if (product.id === id) {
             if (product.quantity > 0) {
               return { ...product, quantity: product.quantity - 1 };
             } else if ((product.quantity = 0)) {
@@ -120,7 +117,7 @@ const {mycart, setMycart} = useContext(Cart_context);
     setTimeout(() => {
       setDiscounted_product(() => {
         return discounted_product.map((product) => {
-          if (product.id == id) {
+          if (product.id === id) {
             if (product.quantity > 0) {
               return { ...product, quantity: product.quantity - 1 };
             } else if ((product.quantity = 0)) {
@@ -132,7 +129,6 @@ const {mycart, setMycart} = useContext(Cart_context);
       });
     }, 1);
   }
-
 
   function add_to_cart(id) {
     let product = sellingproducts.find((product) => product.id === id);
@@ -156,7 +152,7 @@ const {mycart, setMycart} = useContext(Cart_context);
           ...mycart,
           {
             ...product,
-            price: ((100 - product.discount) * product.price) / 100,
+            price: ((100 - (product.discount||0)) * product.price) / 100,
           },
         ];
       });
@@ -168,20 +164,7 @@ const {mycart, setMycart} = useContext(Cart_context);
     }
   }
 
-  // project the product only
-  function see_more(id) {
-    function myfunction(product) {
-      // or return (product.id == id)
-      if (product.id == id) {
-        return product;
-      }
-    }
-    console.log(sellingproducts.filter(myfunction));
-
-    sellingproducts.filter(myfunction);
-  }
-
-  const General_display = () => {
+  const GENERAL_DISPLAY = () => {
     return sellingproducts.map((item) => {
       const { category, brand, img, price, quantity, id, liked } = item;
 
@@ -194,25 +177,17 @@ const {mycart, setMycart} = useContext(Cart_context);
             }}
             className="favourite_button"
           >
-            
-            <img src={liked} alt="favourites" />
+            <img src={liked || require("./images/favourite1.png")} alt="favourites" />
           </button>
           {/* import a default image for products that dont have images */}
-          <img src={img} alt={category} className="selling_item_image" />
+          <img src={img||require('./images/default_product.png')} alt={category} className="selling_item_image" />
           <Link
             to={`/product/${item.id}`}
-            style={{ textDecoration: "none", color: "black" }}
+            style={{ textDecoration: "underline", color: "black" }}
           >
-            <p
-              style={{ float: "right" }}
-              onClick={() => {
-                see_more(id);
-              }}
-            >
-              see more...
-            </p>
+            <p style={{ float: "right", textDecoration: "underline" }}>see more...</p>
           </Link>
-          <h2>{brand || 'others'}</h2>
+          <h2>{brand || "others"}</h2>
           <h4>Price(each):&#36;{price}</h4>
           <h4>Quantity:{quantity || 0}</h4>
           <div className="button_functions">
@@ -255,25 +230,23 @@ const {mycart, setMycart} = useContext(Cart_context);
     });
   };
 
-
   // remeber to do this for discounted products
-  General_display.propTypes = {
+  GENERAL_DISPLAY.propTypes = {
     category: PropTypes.string.isRequired,
     brand: PropTypes.string.isRequired,
     // both can be set to miscelleneous
     img: PropTypes.string.isRequired,
     // alternative to be a blank product image
     price: PropTypes.number.isRequired,
-     quantity: PropTypes.number.isRequired,
+    quantity: PropTypes.number.isRequired,
     //  alternative has been set to zero....as it shoudl be. wink!
-      id: PropTypes.string.isRequired,
-      // shoudl i leave this id or i should change it to index?
-       liked : PropTypes.string.isRequired,
-      //  i have to remove this liked, it should be defaultly set to the blank image
-  }
+    id: PropTypes.string.isRequired,
+    // shoudl i leave this id or i should change it to index?
+    liked: PropTypes.string.isRequired,
+    //  i have to remove this liked, it should be defaultly set to the blank image
+  };
 
-
-  const Discounted_products = () => {
+  const DISCOUNTED_PRODUCTS = () => {
     return discounted_product.map((item) => {
       const { category, brand, img, price, quantity, id, liked, discount } =
         item;
@@ -292,12 +265,7 @@ const {mycart, setMycart} = useContext(Cart_context);
           <p className="discount">{discount}%</p>
 
           <img src={img} alt={category} className="selling_item_image" />
-          <Link
-            to={`/product/${item.id}`}
-            style={{ textDecoration: "none", color: "black" }}
-          >
-            <p style={{ float: "right" }}>see more...</p>
-          </Link>
+
           <h2>{brand}</h2>
 
           <h4>
@@ -366,34 +334,32 @@ const {mycart, setMycart} = useContext(Cart_context);
   //      liked : PropTypes.string.isRequired,
   // }
 
+  // const Favourite = () => {
+  //   return myliked.map((item) => {
+  //     const { category, brand, img, price, quantity, id, liked, discount } =
+  //       item;
 
-
-  const Favourite = () => {
-    return myliked.map((item) => {
-      const { category, brand, img, price, quantity, id, liked, discount } =
-        item;
-
-      return (
-        <div className="selling_item" key={id}>
-          <button
-            type="button"
-            onClick={() => {
-              favourite(id);
-            }}
-            className="favourite_button"
-          >
-            <img src={liked} alt="favourites" />
-          </button>
-          <img src={img} alt={category} className="selling_item_image" />
-          <h2>{brand}</h2>
-          <h4>Price(each): &#36;{price}</h4>
-          <h4>Quantity:{quantity}</h4>
-          <hr></hr>
-          <h4>Total:&#36;{quantity * price}</h4>
-        </div>
-      );
-    });
-  };
+  //     return (
+  //       <div className="selling_item" key={id}>
+  //         <button
+  //           type="button"
+  //           onClick={() => {
+  //             favourite(id);
+  //           }}
+  //           className="favourite_button"
+  //         >
+  //           <img src={liked} alt="favourites" />
+  //         </button>
+  //         <img src={img} alt={category} className="selling_item_image" />
+  //         <h2>{brand}</h2>
+  //         <h4>Price(each): &#36;{price}</h4>
+  //         <h4>Quantity:{quantity}</h4>
+  //         <hr></hr>
+  //         <h4>Total:&#36;{quantity * price}</h4>
+  //       </div>
+  //     );
+  //   });
+  // };
 
   return (
     <React.Fragment>
@@ -436,18 +402,17 @@ const {mycart, setMycart} = useContext(Cart_context);
         <h1>Discounted products</h1>
         <div className=" discounted_products">
           {/* you can add an if statement that checks whether there are discounted products before displaying the heading */}
-          <Discounted_products />
+          <DISCOUNTED_PRODUCTS/>
         </div>
         <h1>Normal sales</h1>
         <div className="showglass">
-          <General_display />
+          <GENERAL_DISPLAY />
         </div>
 
-
-        <h1>FAVOURITES</h1>
+        {/* <h1>FAVOURITES</h1>
         <div className="showglass">
           <Favourite />
-        </div>
+        </div> */}
       </div>
     </React.Fragment>
   );

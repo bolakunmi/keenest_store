@@ -140,6 +140,7 @@ export const discounted_sales = [
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente qui pariatur omnis. Architecto aspernatur, rem tempore illo deleniti alias ullam!",
   },
+
 ];
 export const cart = [];
 

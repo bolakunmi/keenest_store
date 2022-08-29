@@ -1,11 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import {  useParams } from "react-router-dom";
 import { site_data } from "./site_data";
-import { Cart_context } from "./App.js";
 
 const Product = function () {
-  const [sellingproducts, setSellingproducts] = useState(site_data);
-  const { mycart, setMycart } = useContext(Cart_context);
   const [selected_product, setSelected_product] = useState([]);
   const { id } = useParams();
 
@@ -15,11 +12,11 @@ const Product = function () {
       (item) => item.id.toString() === id.toString()
     );
     setSelected_product(newProduct);
-  }, []);
+  }, [id]);
 
-  const The_product = () => {
+  const THE_PRODUCT= () => {
     return (
-      <div className="selling_item" key={selected_product.id}>
+      <div className="selling_item product" key={selected_product.id}>
         {/* import a default image for products that dont have images */}
         <img
           src={selected_product.img}
@@ -36,7 +33,7 @@ const Product = function () {
 
   return (
     <div>
-      <The_product />
+      <THE_PRODUCT />
     </div>
   );
 };
